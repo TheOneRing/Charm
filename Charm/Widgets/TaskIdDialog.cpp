@@ -26,7 +26,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-TaskIdDialog::TaskIdDialog(TaskModelInterface *model, TasksView *parent)
+TaskIdDialog::TaskIdDialog(ViewFilter *model, TasksView *parent)
     : QDialog(parent)
     , m_model(model)
 {

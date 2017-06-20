@@ -28,7 +28,6 @@
 #include <QAbstractItemModel>
 #include <QPointer>
 
-#include "Core/TaskModelInterface.h"
 #include "Core/CharmDataModel.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 #include "Core/CommandEmitterInterface.h"
@@ -55,7 +54,7 @@ typedef ViewColumns ViewColumn;
     It is a QAbstractItemModel, and stores the TaskTreeItem pointer of
     the respective address in the model indexes internal pointer.
 */
-class TaskModelAdapter : public QAbstractItemModel, public TaskModelInterface,
+class TaskModelAdapter : public QAbstractItemModel,
     public CommandEmitterInterface, public CharmDataModelAdapterInterface
 {
     Q_OBJECT
@@ -104,19 +103,19 @@ public:
     void eventDeactivated(EventId id) override;
 
     // reimplement TaskModelInterface:
-    Task taskForIndex(const QModelIndex &) const override;
-    QModelIndex indexForTaskId(TaskId) const override;
-    bool taskIsActive(const Task &task) const override;
-    bool taskHasChildren(const Task &task) const override;
-    bool taskIdExists(TaskId taskId) const override;
+    Task taskForIndex(const QModelIndex &) const;
+    QModelIndex indexForTaskId(TaskId) const;
+    bool taskIsActive(const Task &task) const;
+    bool taskHasChildren(const Task &task) const;
+    bool taskIdExists(TaskId taskId) const;
     TaskList children(const Task &task) const;
 
     // reimplement CommandEmitterInterface:
     void commitCommand(CharmCommand *) override;
 
 Q_SIGNALS:
-    void eventActivationNotice(EventId id) override;
-    void eventDeactivationNotice(EventId id) override;
+    void eventActivationNotice(EventId id);
+    void eventDeactivationNotice(EventId id);
 
 private:
     const TaskTreeItem *itemFor(const QModelIndex &) const;

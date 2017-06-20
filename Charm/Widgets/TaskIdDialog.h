@@ -27,8 +27,10 @@
 #include <QDialog>
 
 #include "TasksView.h"
-#include "Core/TaskModelInterface.h"
+#include "ViewFilter.h"
+
 #include "ui_TaskIdDialog.h"
+
 
 /**
  * Dialog shown when creating a task
@@ -38,7 +40,7 @@ class TaskIdDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TaskIdDialog(TaskModelInterface *model, TasksView *parent);
+    explicit TaskIdDialog(ViewFilter *model, TasksView *parent);
     ~TaskIdDialog() override;
 
     void setSuggestedId(int);
@@ -51,7 +53,7 @@ private Q_SLOTS:
 
 private:
     Ui::TaskIdDialog m_ui;
-    TaskModelInterface *m_model;
+    ViewFilter *m_model;
 };
 
 #endif
