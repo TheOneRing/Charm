@@ -3,20 +3,23 @@ install:
 - ps: |
     $ErrorActionPreference="SilentlyContinue"
     if (!(test-path -path $env:APPVEYOR_BUILD_FOLDER/work)) {
-        [string[]]$config = @("--architecture", "$env:ARCHITECTURE", "--compiler", "$env:COMPILER", "--no-short-path",
-                                            "--set",,
-                                            "Packager/UseCache=True",
-                                            "Packager/RepositoryUrl=http://downloads.kdab.com/kde-emerge/",
-                                            "Compile/BuildType=Release",
-                                            "ContinuousIntegration/Enabled=True",
-                                            "QtSDK/Version=$env:QT_VER",
-                                            "QtSDK/Path=C:\Qt",
-                                            "QtSDK/Enabled=True",
-                                            "QtSDK/Compiler=$env:QTCOMPILER",
-                                            "QtSDK/PackageQtSDK=False",
-                                            "Portage/Ignores=dev-util/msys;dev-util/perl",# we use a cache so we don't need those
-                                            "CraftDebug/DumpSettings=True",
-                                            "PortageVersions/qt-apps/charm=master")
+        [string[]]$config = @(  "--architecture", "$env:ARCHITECTURE",
+                                "--compiler", "$env:COMPILER",
+                                "--no-short-path",
+                                "--no-clone-craft",
+                                "--set",
+                                    "Packager/UseCache=True",
+                                    "Packager/RepositoryUrl=http://downloads.kdab.com/kde-emerge/",
+                                    "Compile/BuildType=Release",
+                                    "ContinuousIntegration/Enabled=True",
+                                    "QtSDK/Version=$env:QT_VER",
+                                    "QtSDK/Path=C:\Qt",
+                                    "QtSDK/Enabled=True",
+                                    "QtSDK/Compiler=$env:QTCOMPILER",
+                                    "QtSDK/PackageQtSDK=False",
+                                    "Portage/Ignores=dev-util/msys;dev-util/perl",# we use a cache so we don't need those
+                                    "CraftDebug/DumpSettings=True",
+                                    "PortageVersions/qt-apps/charm=master")
         Start-FileDownload "https://raw.githubusercontent.com/KDE/craft/master/setup/install_craft.ps1"
         ./install_craft.ps1 -root $env:APPVEYOR_BUILD_FOLDER\work -python "C:\python36\python.exe" -branch "master" -settings $config
     }
@@ -25,8 +28,7 @@ install:
         powershell "$env:APPVEYOR_BUILD_FOLDER\work\craft\kdeenv.ps1" "craft" $args
     }
     $ErrorActionPreference="Stop"
-    craft craft
-    craft -p charm
+    craft -p charm nsis openssl
     craft nsis
     craft openssl
     craft --install-deps charm
