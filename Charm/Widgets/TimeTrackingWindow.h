@@ -56,7 +56,7 @@ public:
         Silent
     };
     // application:
-    void stateChanged(State previous) override;
+    void stateChanged(State previous);
     void restore() override;
 
     bool event(QEvent *) override;
@@ -98,7 +98,7 @@ public Q_SLOTS:
     void slotUserInfoDownloaded(HttpJob *);
     void slotCheckForUpdatesManual();
     void slotStartEvent(TaskId);
-    void configurationChanged() override;
+    void configurationChanged();
 
 protected:
     void insertEditMenu() override;
@@ -117,8 +117,6 @@ private Q_SLOTS:
     void slotGetUserInfo();
 
 Q_SIGNALS:
-    void emitCommand(CharmCommand *) override;
-    void emitCommandRollback(CharmCommand *) override;
     void showNotification(const QString &title, const QString &message);
     void taskMenuChanged();
 

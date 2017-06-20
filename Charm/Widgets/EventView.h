@@ -29,7 +29,6 @@
 #include <QUndoStack>
 #include <QDialog>
 
-#include "Core/UIStateInterface.h"
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
 #include "Core/CommandEmitterInterface.h"
@@ -46,7 +45,7 @@ class QComboBox;
 class QLabel;
 class QListView;
 
-class EventView : public QDialog, public UIStateInterface
+class EventView : public QDialog, public CommandEmitterInterface
 {
     Q_OBJECT
 
@@ -61,8 +60,8 @@ public:
     void populateEditMenu(QMenu *);
 
 Q_SIGNALS:
-    void emitCommand(CharmCommand *) override;
-    void emitCommandRollback(CharmCommand *) override;
+    void emitCommand(CharmCommand *);
+    void emitCommandRollback(CharmCommand *);
 
 public Q_SLOTS:
     void commitCommand(CharmCommand *) override;
@@ -71,10 +70,10 @@ public Q_SLOTS:
     void timeFrameChanged(int);
     void slotConfigureUi();
 
-    void saveGuiState() override;
-    void restoreGuiState() override;
-    void stateChanged(State previous) override;
-    void configurationChanged() override;
+    void saveGuiState();
+    void restoreGuiState();
+    void stateChanged(State previous);
+    void configurationChanged();
 
 private Q_SLOTS:
     void slotEventDoubleClicked(const QModelIndex &);

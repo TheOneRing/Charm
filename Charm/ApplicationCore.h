@@ -165,7 +165,6 @@ private:
     QList<QAction *> m_taskActions;
     EventView m_eventView;
     TasksView m_tasksView;
-    QVector<UIStateInterface *> m_uiElements;
     IdleDetector *m_idleDetector = nullptr;
     CharmCommandInterface *m_cmdInterface = nullptr;
     QLocalServer m_uniqueApplicationServer;
