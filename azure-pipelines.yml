@@ -1,0 +1,17 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+jobs:
+- template: .azure.yml  # Template reference
+  parameters:
+    name: macOS
+    target: macos-64-clang
+    vmImage: macOS-10.13
+
+- template: .azure.yml  # Template reference
+  parameters:
+    name: Windows
+    target: windows-msvc2017_64-cl
+    vmImage: vs2017-win2016

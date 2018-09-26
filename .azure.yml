@@ -1,0 +1,52 @@
+parameters:
+    name: ''  # defaults for any parameters that aren't specified
+    vmImage: ''
+
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - powershell: |
+      $Windows = ($PSVersionTable.Platform -ne "Unix")
+      function craft() {
+          if($Windows)
+          {
+              if(!(Test-Path C:/CraftMaster/CraftMaster))
+              {
+                  #use cmd to silence powershell behaviour for stderr
+                  & cmd /C "git clone -q --depth=1 git://anongit.kde.org/craftmaster.git C:/CraftMaster/CraftMaster 2>&1"
+              }
+              & "py" "C:/CraftMaster/CraftMaster/CraftMaster.py" --config "$env:BUILD_SOURCESDIRECTORY/appveyor.ini" --variables "APPVEYOR_BUILD_FOLDER=$env:BUILD_SOURCESDIRECTORY" --target $env:Target -c $args
+          } else {
+              if(!(Test-Path C:/CraftMaster/CraftMaster))
+              {
+                  & "git" clone -q --depth=1 git://anongit.kde.org/craftmaster.git "~/CraftMaster/CraftMaster"
+              }
+              & "python3" "~/CraftMaster/CraftMaster/CraftMaster.py" --config "$env:BUILD_SOURCESDIRECTORY/appveyor.ini" --variables "APPVEYOR_BUILD_FOLDER=$env:BUILD_SOURCESDIRECTORY" --target $env:Target -c $args
+          }
+          if($LASTEXITCODE -ne 0) {exit $LASTEXITCODE}
+      }
+      craft craft
+      craft -p charm
+
+      if($Windows)
+      {
+          craft nsis
+      }
+      craft --install-deps charm
+      craft --no-cache --src-dir $env:BUILD_SOURCESDIRECTORY charm
+      craft --no-cache --src-dir $env:BUILD_SOURCESDIRECTORY --package charm
+      craft --src-dir $env:BUILD_SOURCESDIRECTORY --test charm
+    env:
+      Target: ${{ parameters.target }}
+    # Publish Build Artifacts
+    # Publish build artifacts to Azure Artifacts/TFS or a file share
+  - task: PublishBuildArtifacts@1
+    inputs:
+        pathtoPublish: '$(Build.SourcesDirectory)/binaries'
+        artifactName: 'Charm $(Build.BuildNumber)'
+        #publishLocation: 'Container' # Options: container, filePath
+        #targetPath: # Required when publishLocation == FilePath
+        #parallel: false # Optional
+        #parallelCount: # Optional
